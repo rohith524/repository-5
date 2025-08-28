@@ -1,0 +1,110 @@
+version: '3.3'
+services:
+  eureka:
+    #build: ./own-eureka-server/src/main/docker
+    build:
+      context: ../
+
+    restart: always
+    ports:
+      - 8002:8002
+    networks:
+       - backend
+       - frontend
+
+  config:
+    build: ./own-config/src/main/docker
+    restart: always
+    networks:
+      - backend
+      - frontend
+    ports:
+      - 8001:8001
+    depends_on:
+      - eureka
+
+  gateway:
+    build: ./own-api-gateway/src/main/docker
+    restart: always
+    networks:
+       - backend
+       - frontend
+    ports:
+      - 9632:9632
+    depends_on:
+      - eureka
+
+
+  file:
+    build: ./own-file/src/main/docker
+    restart: always
+    ports:
+      - 6004:6004
+      - 3306:3306
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - eureka
+
+  product:
+    build: ./own-product/src/main/docker
+    restart: always
+    ports:
+      - 6007:6007
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - eureka
+
+
+  promotion:
+    build: ./own-product/src/main/docker
+    restart: always
+    ports:
+      - 6005:6005
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - eureka
+
+  send:
+    build: ./own-send-server/src/main/docker
+    restart: always
+    ports:
+      - 6003:6003
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - eureka
+
+  user:
+    build: ./own-user-party/src/main/docker
+    restart: always
+    ports:
+      - 6006:6006
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - eureka
+
+
+  workflow:
+    build: ./own-workflow/src/main/docker
+    restart: always
+    ports:
+      - 6008:6008
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - eureka
+
+
+networks:
+  frontend:
+  backend:
